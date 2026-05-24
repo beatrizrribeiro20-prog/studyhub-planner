@@ -1,0 +1,62 @@
+{% extends "planner/layout.html" %}
+
+{% block body %}
+
+<h2>Welcome to StudyHub Planner!</h2>
+
+{% if user.is_authenticated %}
+
+    <h3>Create Assignment</h3>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <input type="text" name="title" placeholder="Assignment Title">
+        <br><br>
+
+        <textarea name="description" placeholder="Description"></textarea>
+        <br><br>
+
+        <button type="submit">Add Assignment</button>
+    </form>
+
+    <hr>
+
+    <h3>Your Assignments</h3>
+
+    {% for assignment in assignments %}
+        <div>
+
+            <h4>
+                {% if assignment.completed %}
+                    ✅ <s>{{ assignment.title }}</s>
+                {% else %}
+                    {{ assignment.title }}
+                {% endif %}
+            </h4>
+
+            <p>{{ assignment.description }}</p>
+
+            <!-- Toggle completed -->
+            <a href="{% url 'toggle_complete' assignment.id %}">
+                {% if assignment.completed %}Undo{% else %}Complete{% endif %}
+            </a>
+
+            <!-- Delete -->
+            <a href="{% url 'delete_assignment' assignment.id %}">Delete</a>
+
+        </div>
+
+        <hr>
+
+    {% empty %}
+        <p>No assignments yet.</p>
+    {% endfor %}
+
+{% else %}
+
+    <p>Please login to create assignments.</p>
+
+{% endif %}
+
+{% endblock %}
