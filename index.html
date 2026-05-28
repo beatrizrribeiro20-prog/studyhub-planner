@@ -24,8 +24,16 @@
 
     <h3>Your Assignments</h3>
 
-    {% for assignment in assignments %}
-        <div>
+    <!-- Search bar -->
+    <input type="text" id="searchInput" placeholder="Search assignments...">
+    
+    <br><br>
+
+    <div id="assignmentList">
+
+        {% for assignment in assignments %}
+
+        <div class="assignment-card">
 
             <h4>
                 {% if assignment.completed %}
@@ -39,24 +47,67 @@
 
             <!-- Toggle completed -->
             <a href="{% url 'toggle_complete' assignment.id %}">
-                {% if assignment.completed %}Undo{% else %}Complete{% endif %}
+                {% if assignment.completed %}
+                    Undo
+                {% else %}
+                    Complete
+                {% endif %}
             </a>
 
+            |
+
             <!-- Delete -->
-            <a href="{% url 'delete_assignment' assignment.id %}">Delete</a>
+            <a href="{% url 'delete_assignment' assignment.id %}">
+                Delete
+            </a>
+
+            <hr>
 
         </div>
 
-        <hr>
+        {% empty %}
 
-    {% empty %}
-        <p>No assignments yet.</p>
-    {% endfor %}
+            <p>No assignments yet.</p>
+
+        {% endfor %}
+
+    </div>
 
 {% else %}
 
     <p>Please login to create assignments.</p>
 
 {% endif %}
+
+
+<!-- JavaScript Search Feature -->
+<script>
+
+// Instant search for assignments
+// Filters assignments while the user types
+
+const searchInput = document.getElementById('searchInput');
+
+searchInput.addEventListener('input', function() {
+
+    const searchValue = searchInput.value.toLowerCase();
+
+    const assignments = document.querySelectorAll('.assignment-card');
+
+    assignments.forEach(card => {
+
+        const text = card.innerText.toLowerCase();
+
+        if (text.includes(searchValue)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+
+    });
+
+});
+
+</script>
 
 {% endblock %}
